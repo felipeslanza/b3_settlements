@@ -1,8 +1,6 @@
 # API settings
 # ----
-API_ENDPOINT = (
-    r"http://www2.bmf.com.br/pages/portal/bmfbovespa/lumis/lum-ajustes-do-pregao-ptBR.asp"
-)
+API_ENDPOINT = r"https://www2.bmf.com.br/pages/portal/bmfbovespa/lumis/lum-ajustes-do-pregao-ptBR.asp"
 
 API_DATE_FORMAT = "%d/%m/%Y"
 
@@ -10,9 +8,9 @@ API_DATE_FORMAT = "%d/%m/%Y"
 API_TABLE_COLUMNS = [
     "underlying",
     "mty",
+    "previous_settlement",
     "last_settlement",
-    "settlement",
-    "delta",
+    "delta_points",
     "delta_by_contract",
 ]
 

@@ -7,7 +7,7 @@ import pandas as pd
 from .constants import API_DATE_FORMAT, API_TABLE_COLUMNS
 
 
-__all__ = ("make_payload", "parse_table")
+__all__ = ("make_payload", "extract_table")
 
 
 def make_payload(date: datetime) -> str:
@@ -15,7 +15,7 @@ def make_payload(date: datetime) -> str:
     return {"dData1": date_str}
 
 
-def parse_table(response: requests.models.Response) -> pd.DataFrame:
+def extract_table(response: requests.models.Response) -> pd.DataFrame:
     table = pd.read_html(response.text, decimal=",")[0]
     first_col, second_col = API_TABLE_COLUMNS[:2]
 
@@ -24,7 +24,10 @@ def parse_table(response: requests.models.Response) -> pd.DataFrame:
 
     for col in API_TABLE_COLUMNS[2:]:
         table[col] = pd.to_numeric(
-            table[col].str.replace(".", "", regex=True).str.replace(",", ".", regex=True),
+            table[col]
+            .astype(str)
+            .str.replace(".", "", regex=True)
+            .str.replace(",", ".", regex=True),
             errors="ignore",
         )
 
