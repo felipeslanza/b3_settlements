@@ -78,8 +78,11 @@ def get_history(
         if using `str`, must be in YYYY-MM-DD format. If not provided, will
         use `datetime.today`.
     """
+
     start_dt = pd.to_datetime(start_dt)
     end_dt = pd.to_datetime(end_dt or datetime.today().date())
+    if end_dt <= start_dt:
+        raise ValueError("`end_dt` must be >= `start_dt")
 
     date_strings = pd.date_range(start_dt, end_dt).strftime(DATE_FORMAT)
     print(f"INFO - Scraping data from {date_strings[0]} to {date_strings[-1]}")
