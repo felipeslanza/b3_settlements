@@ -1,6 +1,7 @@
 attrs==21.4.0
 certifi==2021.10.8
 charset-normalizer==2.0.10
+html5lib==1.1
 idna==3.3
 iniconfig==1.1.1
 lxml==4.7.1
@@ -17,3 +18,4 @@ requests==2.27.1
 six==1.16.0
 toml==0.10.2
 urllib3==1.26.8
+webencodings==0.5.1

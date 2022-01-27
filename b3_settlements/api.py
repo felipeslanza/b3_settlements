@@ -11,7 +11,7 @@ __all__ = ("get_daily", "get_history")
 
 
 def get_daily(date: Optional[Union[str, datetime]] = None) -> pd.DataFrame:
-    """Query settlements' data for a single date. Returns a table with the
+    """Query settlements' data for a single date. Returns a table in the
     following format:
 
         [index]
@@ -53,7 +53,7 @@ def get_history(
     start_dt: Union[str, datetime],
     end_dt: Optional[Union[str, datetime]] = None,
 ) -> pd.DataFrame:
-    """Query settlements' data for a date range. Returns a table with the
+    """Query settlements' data for a date range. Returns a table in the
     following format:
 
         [index]
@@ -93,7 +93,7 @@ def get_history(
             else:
                 daily_results[date_str] = daily
         except Exception as e:
-            print(f"ERROR - Unhandled exception at {date}")
+            print(f"ERROR - Unhandled exception at {date_str}")
 
     df = (
         pd.concat(daily_results)

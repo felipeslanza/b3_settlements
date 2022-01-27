@@ -16,9 +16,14 @@ def make_payload(date: datetime) -> str:
 
 
 def extract_table(response: requests.models.Response) -> pd.DataFrame:
-    table = pd.read_html(response.text, decimal=",")[0]
-    first_col, second_col = API_TABLE_COLUMNS[:2]
+    try:
+        tables = pd.read_html(response.text, decimal=",")
+        table = tables[0]
+    except ValueError:
+        print("ERROR - No tables found")
+        return pd.DataFrame()
 
+    first_col, second_col = API_TABLE_COLUMNS[:2]
     table.columns = API_TABLE_COLUMNS
     table.iloc[:, 0] = table.iloc[:, 0].ffill()
 
