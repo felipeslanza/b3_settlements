@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name="b3_setttements",
-    version="0.01",
+    version="0.02",
     author="fsl",
     author_email="felipeslanza@gmail.com",
     description="Retrieve futures' settlement data from B3 exchange",
@@ -14,8 +14,9 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "bs4",
-        "lxml",
         "html5lib",
+        "joblib",
+        "lxml",
         "pandas",
         "requests",
     ],
