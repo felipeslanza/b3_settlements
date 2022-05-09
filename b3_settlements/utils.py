@@ -1,6 +1,5 @@
 import requests
 from datetime import datetime
-from typing import Union
 
 import pandas as pd
 
@@ -10,7 +9,7 @@ from .constants import API_DATE_FORMAT, API_TABLE_COLUMNS
 __all__ = ("make_payload", "extract_table")
 
 
-def make_payload(date: datetime) -> str:
+def make_payload(date: datetime) -> dict:
     date_str = date.strftime(API_DATE_FORMAT)
     return {"dData1": date_str}
 
@@ -18,11 +17,11 @@ def make_payload(date: datetime) -> str:
 def extract_table(response: requests.models.Response) -> pd.DataFrame:
     try:
         tables = pd.read_html(response.text, decimal=",")
-        table = tables[0]
     except ValueError:
         print("ERROR - No tables found")
         return pd.DataFrame()
 
+    table = tables[0]
     first_col, second_col = API_TABLE_COLUMNS[:2]
     table.columns = API_TABLE_COLUMNS
     table.iloc[:, 0] = table.iloc[:, 0].ffill()

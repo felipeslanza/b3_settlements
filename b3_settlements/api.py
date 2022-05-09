@@ -29,9 +29,7 @@ def _safely_get_daily(date_str: str, verbose: bool) -> Tuple[str, pd.DataFrame]:
 
 # Public
 # ----
-def get_daily(
-    date: Optional[Union[str, datetime]] = None,
-) -> pd.DataFrame:
+def get_daily(date: Optional[Union[str, datetime]] = None) -> pd.DataFrame:
     """Query settlements' data for a single date. Returns a table in the
     following format:
 
@@ -99,7 +97,7 @@ def get_history(
         if using `str`, must be in YYYY-MM-DD format
     end_dt : str or datetime (default=None)
         if using `str`, must be in YYYY-MM-DD format. If not provided, will
-        use `datetime.today`.
+        use `datetime.today()`.
     n_jobs : int
         # of jobs
     verbose : bool
