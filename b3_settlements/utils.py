@@ -30,11 +30,8 @@ def extract_table(response: requests.models.Response) -> pd.DataFrame:
 
     for col in API_TABLE_COLUMNS[2:]:
         table[col] = pd.to_numeric(
-            table[col]
-            .astype(str)
-            .str.replace(".", "", regex=True)
-            .str.replace(",", ".", regex=True),
-            errors="ignore",
+            table[col].astype(str).str.replace(".", "").str.replace(",", "."),
+            errors="raise",
         )
 
     index = table[first_col].str.split(" - ").str[0] + table[second_col]
