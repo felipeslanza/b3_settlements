@@ -17,11 +17,11 @@ def make_payload(date: datetime) -> str:
 
 def extract_table(response: requests.models.Response) -> pd.DataFrame:
     try:
-        tables = pd.read_html(response.text, decimal=",")
+        tables = pd.read_html(StringIO(response.text), decimal=",")
         table = tables[0]
     except ValueError:
         print("ERROR - No tables found")
-        return pd.DataFrame()
+        return pd.DataFrame(dtype="float")
 
     first_col, second_col = API_TABLE_COLUMNS[:2]
     table.columns = API_TABLE_COLUMNS
