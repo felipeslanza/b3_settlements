@@ -30,6 +30,7 @@ df = get_daily("2020-02-11")  # YYYY-MM-DD format
 df = get_history(start_dt="2020-02-03", end_dt="2020-02-28")  # YYYY-MM-DD format
 ```
 
-By default, downloaded historical data will be written as a `.csv` file into your
-temporary directory. Further queries will try to source the data from that file before
-downloading any missing data. To disable it, pass `use_cache=False` to `get_history`.
+By default, downloaded historical data will be written as a `.csv` file to your operating
+system's temporary directory. Further queries will try to source the data from that file
+before downloading any missing data. To disable it, pass `use_cache=False` to
+`get_history`.
