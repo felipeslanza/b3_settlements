@@ -1,4 +1,5 @@
 from io import StringIO
+import sys
 import requests
 from datetime import datetime
 
@@ -7,12 +8,23 @@ import pandas as pd
 from .constants import API_DATE_FORMAT, API_TABLE_COLUMNS
 
 
-__all__ = ("make_payload", "extract_table")
+__all__ = (
+    "extract_table",
+    "get_temp_directory",
+    "make_payload",
+)
 
 
-def make_payload(date: datetime) -> dict:
-    date_str = date.strftime(API_DATE_FORMAT)
-    return {"dData1": date_str}
+def get_temp_directory() -> str:
+    if sys.platform.startswith("linux"):
+        temp_dir = "/tmp"
+    elif sys.platform.startswith("win32") or sys.platform.startswith("cygwin"):
+        temp_dir = os.getenv("TEMP", "C:\\Temp")
+    elif sys.platform.startswith("darwin"):
+        temp_dir = "/tmp"
+    else:
+        raise NotImplementedError("Unsupported operating system")
+    return temp_dir
 
 
 def extract_table(response: requests.models.Response) -> pd.DataFrame:
@@ -38,3 +50,8 @@ def extract_table(response: requests.models.Response) -> pd.DataFrame:
     table.set_index(index, inplace=True)
 
     return table
+
+
+def make_payload(date: datetime) -> dict:
+    date_str = date.strftime(API_DATE_FORMAT)
+    return {"dData1": date_str}

@@ -1,3 +1,4 @@
+import os
 import requests
 from contextlib import redirect_stdout
 from datetime import datetime
@@ -6,8 +7,8 @@ from typing import Optional, Tuple, Union
 import pandas as pd
 from joblib import Parallel, delayed
 
-from .constants import API_ENDPOINT, DATE_FORMAT
-from .utils import make_payload, extract_table
+from .constants import API_ENDPOINT, DATE_FORMAT, TEMP_FILENAME
+from .utils import get_temp_directory, extract_table, make_payload
 
 __all__ = ("get_daily", "get_history")
 
@@ -73,6 +74,7 @@ def get_history(
     end_dt: Optional[Union[str, datetime]] = None,
     n_jobs: int = -1,
     verbose: bool = True,
+    use_cache: bool = True,
 ) -> pd.DataFrame:
     """Query settlements' data for a date range. Returns a table in the
     following format:
@@ -102,12 +104,38 @@ def get_history(
         # of jobs
     verbose : bool
         if True, will print out missed dates
+    use_cache : bool
+        if True, will write out data to your `temp` directory
     """
 
     start_dt = pd.to_datetime(start_dt)
     end_dt = pd.to_datetime(end_dt or datetime.today().date())
     if end_dt <= start_dt:
         raise ValueError("`end_dt` must be >= `start_dt")
+
+    # Search local directory for cached data
+    tmp_filepath = os.path.join(get_temp_directory(), TEMP_FILENAME)
+    old_df = None
+    if use_cache:
+        if os.path.exists(tmp_filepath):
+            df = pd.read_csv(tmp_filepath, index_col=0, parse_dates=True)
+            df_start, df_end = df.index[[0, -1]]
+            if start_dt >= df_start and end_dt <= df_end:
+                print(f"INFO - Using cached data for whole dataset")
+                return df.loc[start_dt:end_dt]
+            elif start_dt < df_start and end_dt <= df_end:
+                end_dt = df_start
+                dt_str = end_dt.strftime("%Y-%m-%d")
+                print(f"INFO - Using cached data for data from {dt_str} onward")
+            elif start_dt >= df_start and end_dt > df_end:
+                start_dt = df_end
+                dt_str = start_dt.strftime("%Y-%m-%d")
+                print(f"INFO - Using cached data for data until {dt_str}")
+            else:
+                raise RuntimeError("Unexpected combination")
+            old_df = df
+        else:
+            print(f"INFO - Found no cached file")
 
     date_strings = pd.date_range(start_dt, end_dt).strftime(DATE_FORMAT)
     print(f"INFO - Scraping data from {date_strings[0]} to {date_strings[-1]}")
@@ -123,5 +151,11 @@ def get_history(
     )
 
     df.index = pd.to_datetime(df.index)
+    if old_df is not None:
+        df = pd.concat([old_df, df], axis=0).sort_index()
+
+    if use_cache:
+        df.to_csv(tmp_filepath)
+        print(f"INFO - Writing data to: {tmp_filepath}")
 
     return df

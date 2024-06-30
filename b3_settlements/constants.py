@@ -18,3 +18,5 @@ API_TABLE_COLUMNS = [
 # General
 # ----
 DATE_FORMAT = "%Y-%m-%d"
+
+TEMP_FILENAME = "local_b3_historical_data.csv"
