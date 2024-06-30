@@ -124,11 +124,11 @@ def get_history(
                 print(f"INFO - Using cached data for whole dataset")
                 return df.loc[start_dt:end_dt]
             elif start_dt < df_start and end_dt <= df_end:
-                end_dt = df_start
+                end_dt = df_start - pd.Timedelta("1d")
                 dt_str = end_dt.strftime("%Y-%m-%d")
                 print(f"INFO - Using cached data for data from {dt_str} onward")
             elif start_dt >= df_start and end_dt > df_end:
-                start_dt = df_end
+                start_dt = df_end + pd.Timedelta("1d")
                 dt_str = start_dt.strftime("%Y-%m-%d")
                 print(f"INFO - Using cached data for data until {dt_str}")
             else:
